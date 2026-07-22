@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="NexSupport — AI-powered customer service and SME support assistant." />
+  <title>NexSupport AI Assistant</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <!-- Animated background orbs -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="app-shell">
+
+    <!-- ── Sidebar ───────────────────────────────────────────── -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">
+            <i data-lucide="bot"></i>
+          </div>
+          <div class="logo-text">
+            <span class="logo-title">NexSupport</span>
+            <span class="logo-sub">AI Assistant</span>
+          </div>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Close sidebar">
+          <i data-lucide="panel-left-close"></i>
+        </button>
+      </div>
+
+      <!-- Status Badge -->
+      <div class="status-bar">
+        <span class="status-dot" id="statusDot"></span>
+        <span class="status-label" id="statusLabel">Connecting…</span>
+      </div>
+
+      <!-- Model Info -->
+      <div class="model-card">
+        <div class="model-card-label">
+          <i data-lucide="cpu"></i> Active Model
+        </div>
+        <div class="model-name" id="modelName">Loading…</div>
+      </div>
+
+      <!-- Quick Starters -->
+      <div class="section-label">Quick Start</div>
+      <div class="quick-starters" id="quickStarters">
+        <button class="chip" data-prompt="What can you help me with?">
+          <i data-lucide="sparkles"></i> What can you do?
+        </button>
+        <button class="chip" data-prompt="I have an issue with my order. Can you help?">
+          <i data-lucide="package"></i> Order issue
+        </button>
+        <button class="chip" data-prompt="I'd like to request a refund. What's the process?">
+          <i data-lucide="refresh-ccw-dot"></i> Request a refund
+        </button>
+        <button class="chip" data-prompt="I'm having trouble logging into my account.">
+          <i data-lucide="lock"></i> Account access
+        </button>
+        <button class="chip" data-prompt="I need support for my small business operations.">
+          <i data-lucide="briefcase"></i> SME business support
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn-reset" id="resetBtn">
+          <i data-lucide="rotate-ccw"></i>
+          New Conversation
+        </button>
+      </div>
+    </aside>
+
+    <!-- ── Main Chat Panel ───────────────────────────────────── -->
+    <main class="chat-panel" id="chatPanel">
+
+      <!-- Top bar -->
+      <header class="topbar">
+        <button class="sidebar-open-btn" id="sidebarOpenBtn" aria-label="Open sidebar">
+          <i data-lucide="panel-left-open"></i>
+        </button>
+        <div class="topbar-title">
+          <i data-lucide="message-circle-heart"></i>
+          NexSupport Chat
+        </div>
+        <div class="topbar-model" id="topbarModel">
+          <i data-lucide="zap"></i>
+          <span id="topbarModelName">—</span>
+        </div>
+      </header>
+
+      <!-- Messages -->
+      <div class="messages-wrap" id="messagesWrap">
+        <div class="messages" id="messages" role="log" aria-live="polite" aria-label="Chat messages">
+          <!-- Messages rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Status/fallback notification strip -->
+      <div class="status-strip" id="statusStrip" hidden>
+        <i data-lucide="alert-triangle"></i>
+        <span id="statusStripText"></span>
+      </div>
+
+      <!-- Input Area -->
+      <footer class="input-area">
+        <div class="input-box">
+          <textarea
+            id="userInput"
+            class="user-input"
+            placeholder="Type your message…"
+            rows="1"
+            maxlength="4000"
+            aria-label="Message input"
+            autofocus
+          ></textarea>
+          <button class="send-btn" id="sendBtn" aria-label="Send message" disabled>
+            <i data-lucide="send"></i>
+          </button>
+        </div>
+        <p class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
+      </footer>
+
+    </main>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>

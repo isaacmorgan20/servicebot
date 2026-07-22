@@ -1,0 +1,14 @@
+[project]
+name = "servicebot"
+version = "1.0.0"
+description = "NexSupport — Customer Service & SME AI Chatbot (OpenRouter)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "rich>=13.0.0",
+    "python-dotenv>=1.0.0",
+    "openai>=1.0.0",
+    "fastapi>=0.136.1",
+    "uvicorn>=0.47.0",
+    "firebase-admin>=6.0.0",
+]
