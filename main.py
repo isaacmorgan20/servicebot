@@ -79,6 +79,7 @@
 
 import sys
 import os
+import uuid
 from dotenv import load_dotenv
 
 from fastapi import FastAPI
@@ -88,7 +89,10 @@ import uvicorn
 
 load_dotenv()
 
-# Rich imports
+# ============================================================
+# RICH IMPORTS
+# ============================================================
+
 try:
     from rich.console import Console
     from rich.panel import Panel
@@ -157,7 +161,10 @@ app = FastAPI(
 )
 
 
-# Allow frontend applications to communicate with the API
+# ============================================================
+# CORS
+# ============================================================
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -168,26 +175,35 @@ app.add_middleware(
 
 
 # ============================================================
-# CHATBOT
+# SESSION STORAGE
 # ============================================================
 
-bot = ServiceBot(
-    api_key=API_KEY,
-    model=MODEL,
-    status_callback=status_callback,
-)
+sessions = {}
+
+
+def create_bot():
+    return ServiceBot(
+        api_key=API_KEY,
+        model=MODEL,
+        status_callback=status_callback,
+    )
 
 
 # ============================================================
-# API REQUEST MODEL
+# REQUEST MODELS
 # ============================================================
 
 class ChatRequest(BaseModel):
+    session_id: str
     message: str
 
 
+class ResetRequest(BaseModel):
+    session_id: str
+
+
 # ============================================================
-# API ROUTES
+# BASIC ROUTES
 # ============================================================
 
 @app.get("/")
@@ -209,30 +225,97 @@ def status():
     }
 
 
-@app.get("/api/greeting")
-def greeting():
+# ============================================================
+# CREATE SESSION
+# ============================================================
+
+@app.get("/api/session")
+def create_session():
+
+    session_id = str(uuid.uuid4())
+
+    bot = create_bot()
+
+    sessions[session_id] = bot
+
     return {
-        "response": bot.get_greeting()
+        "session_id": session_id,
+        "model": MODEL,
+        "greeting": bot.get_greeting()
     }
 
+
+# ============================================================
+# CHAT
+# ============================================================
 
 @app.post("/api/chat")
 def chat(request: ChatRequest):
 
     if not request.message.strip():
         return {
-            "response": "Please enter a message."
+            "reply": "Please enter a message.",
+            "model": MODEL,
+            "tool_calls": [],
+            "status_messages": []
+        }
+
+    bot = sessions.get(request.session_id)
+
+    if bot is None:
+        return {
+            "reply": "Your session has expired. Please refresh the page.",
+            "model": MODEL,
+            "tool_calls": [],
+            "status_messages": []
         }
 
     response = bot.chat(request.message)
 
     return {
-        "response": response
+        "reply": response,
+        "model": MODEL,
+        "tool_calls": [],
+        "status_messages": []
     }
 
 
+# ============================================================
+# RESET SESSION
+# ============================================================
+
+@app.post("/api/reset")
+def reset_session(request: ResetRequest):
+
+    old_session_id = request.session_id
+
+    # Remove old session
+    sessions.pop(old_session_id, None)
+
+    # Create new session
+    new_session_id = str(uuid.uuid4())
+
+    bot = create_bot()
+
+    sessions[new_session_id] = bot
+
+    return {
+        "session_id": new_session_id,
+        "model": MODEL,
+        "greeting": bot.get_greeting()
+    }
+
+
+# ============================================================
+# CLOSING
+# ============================================================
+
 @app.get("/api/closing")
 def closing():
+
+    # Create a temporary bot just to get the closing message
+    bot = create_bot()
+
     return {
         "response": bot.get_closing()
     }
@@ -282,7 +365,10 @@ def run_terminal():
 
     console.print()
 
-    greeting = bot.get_greeting()
+    terminal_bot = create_bot()
+
+    greeting = terminal_bot.get_greeting()
+
     print_bot_message(greeting)
 
     while True:
@@ -295,7 +381,7 @@ def run_terminal():
             console.print()
 
             print_bot_message(
-                bot.get_closing()
+                terminal_bot.get_closing()
             )
 
             break
@@ -307,7 +393,7 @@ def run_terminal():
             "goodbye",
         ):
             print_bot_message(
-                bot.get_closing()
+                terminal_bot.get_closing()
             )
             break
 
@@ -316,7 +402,7 @@ def run_terminal():
 
         print_user_message(user_input)
 
-        response = bot.chat(user_input)
+        response = terminal_bot.chat(user_input)
 
         print_bot_message(response)
 
@@ -324,18 +410,31 @@ def run_terminal():
 # ============================================================
 # START APPLICATION
 # ============================================================
+
 if __name__ == "__main__":
+
     if len(sys.argv) > 1 and sys.argv[1].lower() == "web":
+
+        port = int(os.getenv("PORT", "8010"))
+
         uvicorn.run(
             app,
             host="0.0.0.0",
-            port=8010,
+            port=port,
         )
 
     elif len(sys.argv) > 1 and sys.argv[1].lower() == "chat":
+
         run_terminal()
 
     else:
+
         console.print("[bold yellow]Usage:[/bold yellow]")
-        console.print("  python main.py web   → Start FastAPI server")
-        console.print("  python main.py chat  → Start terminal chatbot")
+
+        console.print(
+            "  python main.py web   → Start FastAPI server"
+        )
+
+        console.print(
+            "  python main.py chat  → Start terminal chatbot"
+        )
