@@ -3,16 +3,18 @@ import Sidebar from './components/Sidebar.jsx'
 import ChatPanel from './components/ChatPanel.jsx'
 
 // ── API helpers ────────────────────────────────────────────────────────────
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
+
 const api = {
-  session: () => fetch('/api/session'),
+  session: () => fetch(`${API_BASE}/api/session`),
   chat:    (session_id, message) =>
-    fetch('/api/chat', {
+    fetch(`${API_BASE}/api/chat`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ session_id, message }),
     }),
   reset: (session_id) =>
-    fetch('/api/reset', {
+    fetch(`${API_BASE}/api/reset`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ session_id }),

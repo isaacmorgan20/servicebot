@@ -1,0 +1,5 @@
+{
+  "framework": "vite",
+  "buildCommand": "cd frontend && yarn install --frozen-lockfile && yarn build",
+  "outputDirectory": "static_react"
+}
