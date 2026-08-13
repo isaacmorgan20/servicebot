@@ -2,6 +2,7 @@ import os
 import re
 import time
 from openai import OpenAI
+from .agent import is_out_of_scope
 
 
 SKILL_PATH = os.path.expanduser(
@@ -82,6 +83,10 @@ class ServiceBot:
         )
 
     def chat(self, message: str) -> str:
+        scope_reply = is_out_of_scope(message)
+        if scope_reply:
+            return scope_reply
+
         self.messages.append({"role": "user", "content": message})
 
         models_to_try = [self.model]

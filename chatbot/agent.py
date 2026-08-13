@@ -48,36 +48,69 @@ SCOPE_BOUNDARY = (
 )
 
 OUT_OF_SCOPE_PATTERNS = [
-    r'\b(recipe|cook|bake|ingredient|dinner|lunch|breakfast|meal)\b',
-    r'\b(sports|football|basketball|soccer|game|match|player|team)\b',
+    r'\b(recipe|cook|bake|ingredient|dinner|lunch|breakfast|meal|pizza|pasta|wine|coffee|food|dish)\b',
+    r'\b(sports|football|basketball|soccer|game|match|player|team|hockey|cricket|tennis)\b',
     r'\b(health|doctor|hospital|medicine|disease|symptom|pain|treatment|diagnos|headache|fever|cough|cold|flu|ache|hurt|injury|sick|ill|nausea|vomit|dizzy|allergy|infection|surgery|medication|drug|prescription|vaccine|therapy|therapist|psychologist|depression|anxiety|stress)\b',
     r'\b(farming|farm|crop|plant|harvest|livestock|agriculture|soil|fertilizer)\b',
-    r'\b(politics|election|president|government|political|vote|party)\b',
-    r'\b(programming|code|software|app|website|python|javascript|react|api|algorithm|database|server)\b',
+    r'\b(politics|election|president|prime minister|government|political|vote|party|congress|senator|policy debate)\b',
+    r'\b(programming|code|coding|software|app|website|python|javascript|react|api|algorithm|database|server|gpu|bug|deployment)\b',
     r'\b(relationship|dating|marriage|boyfriend|girlfriend|family|advice)\b',
-    r'\b(horoscope|astrology|psychic|spiritual|prayer|bible|religious)\b',
+    r'\b(horoscope|astrology|psychic|spiritual|prayer|bible|religious|religion)\b',
     r'\b(car|vehicle|mechanic|engine|tire|repair|maintenance)\b',
     r'\b(immigration|visa|passport|citizenship|green card)\b',
-    r'\b(gambling|betting|crypto|bitcoin|invest|stock|trading)\b',
-    r'\b(celebrity|movie|music|song|actor|actress|entertainment)\b',
-    r'\b(homework|assignment|exam|test|quiz|college|university)\b',
-    r'\b(weight loss|diet|exercise|workout|fitness|nutrition)\b',
+    r'\b(gambling|betting|crypto|bitcoin|invest|stock|trading|nft)\b',
+    r'\b(celebrity|movie|music|song|actor|actress|entertainment|film|album|artist|band)\b',
+    r'\b(homework|assignment|exam|test|quiz|college|university|school|teacher|student)\b',
+    r'\b(weight loss|diet|exercise|workout|fitness|nutrition|gym|muscle)\b',
+    r'\b(capital|country|city|geography|continent|population|flag|language)\b',
+    r'\b(weather|forecast|climate|temperature|storm|rain)\b',
+    r'\b(history|historical|war|battle|civilization|president of|king|queen)\b',
+    r'\b(science|biology|chemistry|physics|space|nasa|universe|gravity|element)\b',
+    r'\b(math|mathematics|algebra|calculus|equation|geometry|statistics|probability)\b',
+    r'\b(trivia|general knowledge|fun fact|riddle|random question|guess|joke|poem)\b',
+    r'\b(news|current events|celebrity news|headlines)\b',
+    r'\b(travel|vacation|holiday|flight|airport|hotel|booking|destination)\b',
+    r'\b(pet|dog|cat|animal|veterinarian|breed|zoo)\b',
+    r'\b(pregnancy|baby|child|children|parenting|toddler|newborn)\b',
+    r'\b(job|career|employment|interview|resume|salary|layoff)\b',
+    r'\b(diy|home improvement|renovation|furniture|decorating|handyman)\b',
+]
+
+
+IN_SCOPE_KEYWORDS = [
+    r'\b(account|chequing|checking|savings|balance|deposit|withdraw|withdrawal)s?\b',
+    r'\b(transfer|wire|e-?transfer|etransfer|payment|bill|pay|payee|autopay)s?\b',
+    r'\b(card|debit|credit|pin|freeze|fraud|dispute|chargeback|charge)s?\b',
+    r'\b(loan|mortgage|interest|rate|gic|tfsa|rrsp|fee|service charge|overdraft|line of credit)s?\b',
+    r'\b(statement|transaction|pending|online banking|mobile|app|login)s?\b',
+    r'\b(bank|banking|password|limit|alert|security|unauthorised|unauthorized)s?\b',
+    r'\b(ticket|faq|policy|support|help)s?\b',
+    r'\b(routing|iban|swift|branch|atm|cheque|check|receipt|due date|minimum balance)s?\b',
 ]
 
 
 def is_out_of_scope(message: str) -> str | None:
     msg_lower = message.lower().strip()
+    msg_clean = re.sub(r"[^a-z0-9\s']", ' ', msg_lower).strip()
 
-    greetings = ['hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening', 'what\'s up', 'yo']
-    if msg_lower in greetings or msg_lower.startswith(('hi ', 'hello ', 'hey ')):
+    greetings = [
+        'hi', 'hello', 'hey', 'good morning',
+        'good afternoon', 'good evening', "what's up", 'yo',
+    ]
+    if msg_clean in greetings or msg_clean.startswith(('hi ', 'hello ', 'hey ')):
         return None
 
-    if msg_lower in ('who are you', 'what can you do', 'help', 'thanks', 'thank you'):
+    if msg_clean in (
+        'who are you', 'what can you do', 'what do you do', 'help',
+        'thanks', 'thank you', 'thank you very much', 'goodbye', 'bye',
+        'ok', 'okay', 'yes', 'no', 'yes please', 'ok thanks', 'cool',
+        'great', 'perfect', "that's all", 'no thanks',
+    ):
         return None
 
     health_pattern = re.compile(r'\b(headache|fever|cough|cold|flu|ache|hurt|sick|ill|nausea|pain|doctor|medicine|symptom|diagnos|treatment)\b')
-    health_matches = health_pattern.findall(msg_lower)
-    has_bank_context = bool(re.search(r'\b(health insurance|dental|benefit|employee|workplace|policy|bank|account|payment|claim|coverage)\b', msg_lower))
+    health_matches = health_pattern.findall(msg_clean)
+    has_bank_context = bool(re.search(r'\b(health insurance|dental|benefit|employee|workplace|policy|bank|account|payment|claim|coverage)\b', msg_clean))
     if len(health_matches) >= 1 and not has_bank_context:
         return (
             "Health questions are outside my scope — I specialise in banking "
@@ -87,22 +120,25 @@ def is_out_of_scope(message: str) -> str | None:
 
     score = 0
     for pattern in OUT_OF_SCOPE_PATTERNS:
-        score += len(list(re.finditer(pattern, msg_lower)))
+        score += len(list(re.finditer(pattern, msg_clean)))
 
-    in_scope_keywords = [
-        r'\b(account|chequing|savings|balance|deposit|withdrawal)\b',
-        r'\b(transfer|wire|e-?transfer|payment|bill|pay)\b',
-        r'\b(card|debit|credit|pin|freeze|fraud|dispute|chargeback)\b',
-        r'\b(loan|mortgage|credit|interest|rate|gic|fee|service charge)\b',
-        r'\b(statement|transaction|pending|online banking|mobile|app|login)\b',
-        r'\b(bank|banking|password|limit|alert|security|unauthorised)\b',
-        r'\b(ticket|faq|policy|support|help)\b',
-    ]
-    for pattern in in_scope_keywords:
-        if re.search(pattern, msg_lower):
+    in_scope = False
+    for pattern in IN_SCOPE_KEYWORDS:
+        if re.search(pattern, msg_clean):
             score -= 2
+            in_scope = True
 
     if score >= 1:
+        return (
+            "That's outside my banking focus — I specialise in accounts, "
+            "transactions, cards, and other banking support! "
+            "Is there a banking question I can help you with?"
+        )
+
+    # No banking signal at all: assume it is off-topic instead of letting the
+    # model answer. This prevents general-knowledge / trivia queries slipping
+    # through the keyword heuristics.
+    if not in_scope:
         return (
             "That's outside my banking focus — I specialise in accounts, "
             "transactions, cards, and other banking support! "
