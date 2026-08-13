@@ -1,11 +1,11 @@
-import { Sparkles, Package, RefreshCcwDot, Lock, Briefcase } from 'lucide-react'
+import { Sparkles, Wallet, RefreshCcwDot, Lock, ArrowUpDown } from 'lucide-react'
 
 const CHIPS = [
-  { icon: <Sparkles />, label: 'What can you do?',       prompt: 'What can you help me with?' },
-  { icon: <Package />,  label: 'Order issue',            prompt: 'I have an issue with my order. Can you help?' },
-  { icon: <RefreshCcwDot />, label: 'Request a refund',  prompt: "I'd like to request a refund. What's the process?" },
-  { icon: <Lock />,     label: 'Account access',         prompt: 'I am having trouble logging into my account.' },
-  { icon: <Briefcase />, label: 'SME business support',  prompt: 'I need support for my small business operations.' },
+  { icon: <Sparkles />,     label: 'What can you do?',           prompt: 'What can you help me with?' },
+  { icon: <Wallet />,       label: 'Check account balance',      prompt: 'What is the balance on my chequing account?' },
+  { icon: <RefreshCcwDot />, label: 'Dispute a transaction',     prompt: 'I need to dispute a transaction on my account.' },
+  { icon: <Lock />,         label: 'Report a lost card',         prompt: 'I lost my debit card. How do I report it as lost or stolen?' },
+  { icon: <ArrowUpDown />,  label: 'Increase transfer limit',    prompt: 'I want to increase my daily transfer limit.' },
 ]
 
 export default function QuickChips({ onSelect, disabled }) {

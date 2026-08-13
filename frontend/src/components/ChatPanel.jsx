@@ -66,7 +66,7 @@ export default function ChatPanel({
               <div className="empty-icon"><MessageCircleHeart /></div>
               <div className="empty-title">How can I help you?</div>
               <p className="empty-sub">
-                Ask me anything — from order issues and refunds to business support. I'm here for you.
+                Ask me anything — from account balances and transactions to cards and fraud support. I'm here for you.
               </p>
             </div>
           ) : (

@@ -8,3 +8,7 @@ venv/
 dist/
 build/
 .python-version
+
+node_modules/
+frontend/node_modules/
+static_react/

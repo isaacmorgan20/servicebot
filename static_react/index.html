@@ -5,99 +5,10 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>customer-service</title>
-    <style>
-      #nexsupport-widget {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        z-index: 2147483647;
-        font-family: 'Outfit', 'Inter', system-ui, sans-serif;
-      }
-      #nexsupport-toggle {
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-        border: none;
-        box-shadow: 0 4px 24px rgba(139,92,246,0.45);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        margin-left: auto;
-        position: relative;
-        z-index: 2;
-      }
-      #nexsupport-toggle:hover {
-        transform: scale(1.08);
-        box-shadow: 0 6px 32px rgba(139,92,246,0.6);
-      }
-      #nexsupport-toggle:active {
-        transform: scale(0.95);
-      }
-      #nexsupport-toggle svg {
-        width: 26px;
-        height: 26px;
-        color: #fff;
-      }
-      #nexsupport-iframe-wrapper {
-        position: absolute;
-        bottom: 68px;
-        right: 0;
-        width: 350px;
-        height: 500px;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(139,92,246,0.15);
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(12px) scale(0.96);
-        transition: opacity 0.25s ease, transform 0.3s ease, visibility 0.25s;
-        transform-origin: bottom right;
-      }
-      #nexsupport-iframe-wrapper.open {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0) scale(1);
-      }
-      #nexsupport-iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-        background: #080c15;
-      }
-    </style>
-    <script type="module" crossorigin src="/assets/index-DGdDpNzJ.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DJHM3hzP.css">
+    <script type="module" crossorigin src="/assets/index-CpGX0bIV.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Dqmj8FSu.css">
   </head>
   <body>
     <div id="root"></div>
-
-    <div id="nexsupport-widget" data-chatbot-url="http://127.0.0.1:8000">
-      <button id="nexsupport-toggle" aria-label="Toggle chatbot">
-        <svg id="nexsupport-chat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <svg id="nexsupport-close-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-      <div id="nexsupport-iframe-wrapper">
-        <iframe id="nexsupport-iframe" title="NexSupport AI Chatbot" loading="lazy"></iframe>
-      </div>
-    </div>
-    <script>
-      (function(){
-        var widget = document.getElementById('nexsupport-widget');
-        var toggle = document.getElementById('nexsupport-toggle');
-        var wrapper = document.getElementById('nexsupport-iframe-wrapper');
-        var iframe = document.getElementById('nexsupport-iframe');
-        var chatIcon = document.getElementById('nexsupport-chat-icon');
-        var closeIcon = document.getElementById('nexsupport-close-icon');
-        iframe.src = widget.getAttribute('data-chatbot-url');
-        toggle.addEventListener('click', function(){
-          var isOpen = wrapper.classList.toggle('open');
-          chatIcon.style.display = isOpen ? 'none' : '';
-          closeIcon.style.display = isOpen ? '' : 'none';
-        });
-      })();
-    </script>
   </body>
 </html>
